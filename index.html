@@ -97,7 +97,7 @@ header.topbar{position:sticky;top:0;z-index:800;background:rgba(245,246,241,.86)
 .marquee-track{display:flex;width:max-content;animation:marquee 26s linear infinite}
 .marquee:hover .marquee-track{animation-play-state:paused}
 .marquee span{font-family:var(--font-m);font-size:12px;letter-spacing:.3em;white-space:nowrap;color:var(--paper-58);padding:0 18px}
-.marquee span i{color:var(--green-400);font-style:normal;padding:0 18px}
+.marquee span i{color:var(--green-400);font-style:normal;padding:0 18px;font-family:'Space Mono','Noto Sans SC','Segoe UI Symbol','Apple Symbols',sans-serif}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 section{padding:clamp(56px,8vw,110px) 0}
 #feedSec{min-height:100vh;min-height:100svh}
@@ -213,6 +213,7 @@ html.lenis,html.lenis body{height:auto}
 .lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
 .lenis.lenis-stopped{overflow:hidden}
 </style>
+
 
 
 
@@ -874,7 +875,7 @@ function closeSuccess() {
 /* ---------- marquee ---------- */
 function buildMarquee() {
   var parts = ["芙蕾", "FREY"];
-  var chunk = parts.map(function (p) { return "<span>" + p + "<i>●</i></span>"; }).join("");
+  var chunk = parts.map(function (p) { return "<span>" + p + "<i>✦</i></span>"; }).join("");
   var track = $("mqTrack");
   track.innerHTML = chunk;
   var repeats = Math.max(4, Math.ceil(innerWidth / Math.max(1, track.scrollWidth)) + 2);
@@ -977,6 +978,7 @@ document.addEventListener("DOMContentLoaded", boot);
 </script>
 </body>
 </html>
+
 
 
 
