@@ -52,7 +52,10 @@ header.topbar{position:sticky;top:0;z-index:800;background:rgba(245,246,241,.86)
 .topbar-in{display:flex;align-items:center;justify-content:space-between;gap:16px;height:58px}
 .topbar .brand{display:flex;align-items:center;gap:12px}
 .topbar .brand .dot{width:7px;height:7px;background:var(--green);flex:none}
-.topbar .brand b{font-family:var(--font-d);font-weight:700;font-size:15px;letter-spacing:-.01em}
+.topbar .brand svg{height:18px;width:auto;display:block}
+.foot-logo svg{height:30px;width:auto;display:block}
+.foot-logo text{fill:var(--paper)}
+.foot-logo tspan{fill:var(--green-400)}
 .topbar .brand span{font-family:var(--font-m);font-size:10px;color:var(--ink-58);letter-spacing:.22em}
 .topbar nav{display:flex;align-items:center;gap:8px}
 .tb-btn{font-family:var(--font-m);font-size:11px;letter-spacing:.18em;padding:8px 12px;border:1px solid var(--ink-14);border-radius:8px;transition:all .3s ease;color:var(--ink-58)}
@@ -115,6 +118,11 @@ section{padding:clamp(56px,8vw,110px) 0}
 .qmeta .time{font-family:var(--font-m);font-size:10px;letter-spacing:.18em;color:var(--paper-40);margin-left:auto}
 .qtext{font-size:clamp(17px,2vw,21px);line-height:1.6;font-weight:500;letter-spacing:.01em;margin-bottom:14px}
 .atext{font-size:15px;line-height:1.8;color:var(--paper-58);white-space:pre-line}
+.qcard .atext{display:none}
+.qcard.open .atext{display:block;animation:fadeIn .45s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.qcard .qfoot .more .a{transition:transform .3s ease}
+.qcard.open .qfoot .more{color:var(--green-200)}
 .atext .a-label{font-family:var(--font-m);font-size:10px;letter-spacing:.26em;color:var(--green-400);display:block;margin-bottom:8px}
 .qfoot{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:16px;border-top:1px solid var(--paper-16)}
 .qfoot .more{font-family:var(--font-m);font-size:11px;letter-spacing:.22em;color:var(--paper-40);transition:color .3s}
@@ -143,17 +151,7 @@ section{padding:clamp(56px,8vw,110px) 0}
 .btn-ask:disabled{opacity:.5;pointer-events:none}
 .ask-rules{font-family:var(--font-m);font-size:10px;letter-spacing:.2em;color:var(--ink-40);line-height:2;margin-top:22px}
 .ask-rules i{color:var(--green);font-style:normal}
-#overlay{position:fixed;inset:0;z-index:950;background:rgba(5,7,6,.92);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:var(--space);opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s}
-#overlay.open{opacity:1;visibility:visible}
-.detail{background:var(--bg);border:1px solid var(--paper-16);border-radius:var(--radius);max-width:720px;width:100%;max-height:86vh;overflow:auto;padding:clamp(24px,4vw,44px);position:relative}
-.detail .d-close{position:absolute;top:18px;right:18px;width:40px;height:40px;border:1px solid var(--paper-16);border-radius:50%;color:var(--paper-58);font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .3s}
-.detail .d-close:hover{border-color:var(--green);color:var(--green-200);transform:rotate(90deg)}
-.detail .d-meta{display:flex;flex-wrap:wrap;gap:8px 18px;font-family:var(--font-m);font-size:10px;letter-spacing:.22em;color:var(--paper-40);margin-bottom:26px;text-transform:uppercase}
-.detail .d-meta .pin{color:var(--green-400)}
-.detail .d-q{font-size:clamp(19px,2.4vw,26px);line-height:1.55;font-weight:500;padding-bottom:22px;border-bottom:1px solid var(--paper-16);margin-bottom:22px}
-.detail .d-a{font-size:15.5px;line-height:1.85;color:var(--paper-58);white-space:pre-line}
-.detail .d-a .who{font-family:var(--font-m);font-size:10px;letter-spacing:.26em;color:var(--green-400);display:block;margin-bottom:10px}
-.detail .d-a + .d-a{margin-top:18px;padding-top:18px;border-top:1px solid var(--paper-16)}
+
 #toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);z-index:1200;background:var(--ink);color:var(--paper);font-family:var(--font-m);font-size:12px;letter-spacing:.16em;padding:14px 22px;border-radius:10px;border:1px solid var(--paper-16);opacity:0;visibility:hidden;transition:all .4s ease;max-width:88vw;text-align:center;line-height:1.7}
 #toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
 #toast.err{background:#7a1510}
@@ -200,6 +198,7 @@ footer{background:var(--bg);color:var(--paper);border-top:1px solid var(--paper-
 
 
 
+
 </head>
 <body>
 
@@ -216,8 +215,16 @@ footer{background:var(--bg);color:var(--paper);border-top:1px solid var(--paper-
 <header class="topbar">
   <div class="wrap topbar-in">
     <div class="brand">
-      <span class="dot"></span>
-      <b>提问箱</b>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 436 112" width="436" height="112">
+  <defs>
+    <style>
+      @font-face { font-family:'Syne'; font-style:normal; font-weight:800; font-display:block; src:url(data:font/woff2;base64,d09GMgABAAAAAAOEABAAAAAABoAAAAMnAAIzMwAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbgSQcKgZgP1NUQVQqAEwRCAqCBIFgATYCJAMUCwwABCAFg2QHIAwHGzoFCL4GcDLGd7haZUHtYgVROmaaFQegJ3gr5/DMEla/+v7RFO7VjYf/nyvv+8lQdrZE7IAlEWrUgLJnhSqwccCqVezzf2vt7x0mlUeaeCYJMc9rOn6SCi3iIRKyiIND7kGMbYFZpCHCbu95ApEnkIAl1MA5V7Rh02geTVDJCT4MTxxYvsWyR4IenenkXolyYv03adfJyYHgehD8DpwEHFYUsnswnvjM44jiSK7vmp3hJQKkfEtVQbdLQPX4XozsxDZ0Mz4qgs4iCDROZC+aQGOBjgmWYBRY6fsH9CBvgcsP81Ym06MxMmsmOUmfd39KoAlIQsiFQGGIkti8BcuW69q/5fhBXXIoCWLfjqMHtSAQckldUhhE0ZQjdKIImZCQjNCASUbF5UD5U75Aee1knIsNCYTnZQYNKtkwCaTnGQDy7PYMgEbSlV4NLJUtsdFCxoAiBvbb5Ds74Kj3XgbZs/oVAfEfaoEB4kKoC3ShoI/YqV27j0cFSUAU2QAAJGToIi7QRYMZQKEuSRYwMfX/D+v9ymciEgBClCxQAQVqmAtsByAHhCRJRc9mpJlXzunSXjtF5VDLw/ugrX5g7T/W8Wu2u7XVTmxfOWVaZwUtqdh1ZbbE9buz511p+3PuWH5sd7Fu19ytl/feoC04/uKbhluPcw3Nn6BbNh89+q54Z7S6rhY7H81da702tg92PzE7OHb3JnUUZN49XNDvvoDy/YfcfC2opOEnGD738my9elt6AIE0ufyaX8lN3XNewdmP8KE3OuFz5q0sS7m5ys4CVQkEr7NrbSH0W6FQ1yvxuTt3m+739pAh2wUWqFit2TzzKgCZQMNRcZE38BYMQx9HMGnnM8xMcjPOo7CiV1isqk8MXFQ0Y/kLotApqQkYUce4bA4BKSko6oNscpiQDXVRv8cqBvOYdAIyRhIcGMMhCQ5BILh+eXk2lxBQaXJ0WChPg0U8mMRkhbCIwZRnEQvHOgbH8LOEAci+RaUzJREfm1IjMKpxWMCwziRNcsKU5E48LhiwbMWyKQNlKbsGbCcM54KNkLRPgx3xqg0hL05RlWNB/TFY7sF1AAAA) format('woff2'); }
+      @font-face { font-family:'Star'; font-style:normal; font-weight:800; font-display:block; src:url(data:font/woff2;base64,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) format('woff2'); }
+    </style>
+  </defs>
+  <text x="6" y="78" font-family="'Syne','Star',sans-serif" font-weight="800" font-size="100" letter-spacing="-2" fill="#0A0D0C">Frey<tspan fill="#01847F">&#x2726;</tspan></text>
+</svg>
+
     </div>
     <nav>
       <button class="tb-btn" id="btnRefresh"><span class="txt">刷新</span><span>↻</span></button>
@@ -260,36 +267,18 @@ footer{background:var(--bg);color:var(--paper);border-top:1px solid var(--paper-
     <div class="marquee-track" id="mqTrack"></div>
   </div>
 
-  <!-- FEED -->
-  <section class="dark" id="feedSec">
-    <div class="grid-bg"></div>
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <div>
-          <span class="num">01</span>
-          <h2>问答</h2>
-        </div>
-      </div>
-      <div class="feed" id="feed">
-        <div class="feed-empty">LOADING…</div>
-      </div>
-      <div class="loadmore-wrap reveal" id="moreWrap"><button class="btn-more" id="btnMore">加载更多 ↓</button></div>
-      <p class="feed-note" id="feedNote">只会显示已公开回复的提问～</p>
-    </div>
-  </section>
-
   <!-- ASK -->
   <section id="askSec">
     <div class="wrap">
       <div class="sec-head reveal">
         <div>
-          <span class="num">02</span>
+          <span class="num">01</span>
           <h2>提问</h2>
         </div>
       </div>
       <div class="ask-grid">
         <div class="reveal">
-          <p class="ask-tip" id="askTip">随便问点什么吧～</p>
+          <p class="ask-tip" id="askTip">想对我说些什么呢？</p>
           <div class="ask-rules">友善提问，恶意骚扰会被拉黑</div>
         </div>
         <div class="reveal" data-stagger="1">
@@ -304,20 +293,50 @@ footer{background:var(--bg);color:var(--paper);border-top:1px solid var(--paper-
       </div>
     </div>
   </section>
+
+  <!-- FEED -->
+  <section class="dark" id="feedSec">
+    <div class="grid-bg"></div>
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <span class="num">02</span>
+          <h2>问答</h2>
+        </div>
+      </div>
+      <div class="feed" id="feed">
+        <div class="feed-empty">LOADING…</div>
+      </div>
+      <div class="loadmore-wrap reveal" id="moreWrap"><button class="btn-more" id="btnMore">加载更多 ↓</button></div>
+      <p class="feed-note" id="feedNote">只会显示已公开回复的提问～</p>
+    </div>
+  </section>
 </main>
 
 <footer>
   <div class="grid-bg"></div>
   <div class="wrap">
-    <div class="foot-grid" style="grid-template-columns:1fr auto;align-items:center">
-      <div class="foot-brand">提问箱</div>
-      <a href="#" id="footTop" style="font-family:var(--font-m);font-size:11px;letter-spacing:.2em;color:var(--paper-58);border:1px solid var(--paper-16);padding:10px 16px;border-radius:8px;transition:all .3s">回到顶部 ↑</a>
+    <div class="foot-grid" style="grid-template-columns:1fr auto;align-items:center;gap:24px">
+      <div class="foot-brand foot-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 436 112" width="436" height="112">
+  <defs>
+    <style>
+      @font-face { font-family:'Syne'; font-style:normal; font-weight:800; font-display:block; src:url(data:font/woff2;base64,d09GMgABAAAAAAOEABAAAAAABoAAAAMnAAIzMwAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbgSQcKgZgP1NUQVQqAEwRCAqCBIFgATYCJAMUCwwABCAFg2QHIAwHGzoFCL4GcDLGd7haZUHtYgVROmaaFQegJ3gr5/DMEla/+v7RFO7VjYf/nyvv+8lQdrZE7IAlEWrUgLJnhSqwccCqVezzf2vt7x0mlUeaeCYJMc9rOn6SCi3iIRKyiIND7kGMbYFZpCHCbu95ApEnkIAl1MA5V7Rh02geTVDJCT4MTxxYvsWyR4IenenkXolyYv03adfJyYHgehD8DpwEHFYUsnswnvjM44jiSK7vmp3hJQKkfEtVQbdLQPX4XozsxDZ0Mz4qgs4iCDROZC+aQGOBjgmWYBRY6fsH9CBvgcsP81Ym06MxMmsmOUmfd39KoAlIQsiFQGGIkti8BcuW69q/5fhBXXIoCWLfjqMHtSAQckldUhhE0ZQjdKIImZCQjNCASUbF5UD5U75Aee1knIsNCYTnZQYNKtkwCaTnGQDy7PYMgEbSlV4NLJUtsdFCxoAiBvbb5Ds74Kj3XgbZs/oVAfEfaoEB4kKoC3ShoI/YqV27j0cFSUAU2QAAJGToIi7QRYMZQKEuSRYwMfX/D+v9ymciEgBClCxQAQVqmAtsByAHhCRJRc9mpJlXzunSXjtF5VDLw/ugrX5g7T/W8Wu2u7XVTmxfOWVaZwUtqdh1ZbbE9buz511p+3PuWH5sd7Fu19ytl/feoC04/uKbhluPcw3Nn6BbNh89+q54Z7S6rhY7H81da702tg92PzE7OHb3JnUUZN49XNDvvoDy/YfcfC2opOEnGD738my9elt6AIE0ufyaX8lN3XNewdmP8KE3OuFz5q0sS7m5ys4CVQkEr7NrbSH0W6FQ1yvxuTt3m+739pAh2wUWqFit2TzzKgCZQMNRcZE38BYMQx9HMGnnM8xMcjPOo7CiV1isqk8MXFQ0Y/kLotApqQkYUce4bA4BKSko6oNscpiQDXVRv8cqBvOYdAIyRhIcGMMhCQ5BILh+eXk2lxBQaXJ0WChPg0U8mMRkhbCIwZRnEQvHOgbH8LOEAci+RaUzJREfm1IjMKpxWMCwziRNcsKU5E48LhiwbMWyKQNlKbsGbCcM54KNkLRPgx3xqg0hL05RlWNB/TFY7sF1AAAA) format('woff2'); }
+      @font-face { font-family:'Star'; font-style:normal; font-weight:800; font-display:block; src:url(data:font/woff2;base64,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) format('woff2'); }
+    </style>
+  </defs>
+  <text x="6" y="78" font-family="'Syne','Star',sans-serif" font-weight="800" font-size="100" letter-spacing="-2" fill="#0A0D0C">Frey<tspan fill="#01847F">&#x2726;</tspan></text>
+</svg>
+</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <!-- TODO: 把下面这个 href 换成你的个人主页链接 -->
+        <a href="#" id="footHome" style="font-family:var(--font-m);font-size:11px;letter-spacing:.2em;color:var(--paper-58);border:1px solid var(--paper-16);padding:10px 16px;border-radius:8px;transition:all .3s">主页 ↗</a>
+        <a href="#" id="footTop" style="font-family:var(--font-m);font-size:11px;letter-spacing:.2em;color:var(--paper-58);border:1px solid var(--paper-16);padding:10px 16px;border-radius:8px;transition:all .3s">回到顶部 ↑</a>
+      </div>
     </div>
     <div class="foot-bottom" style="justify-content:flex-start"><span>更新于 <b id="footTime">—</b></span></div>
   </div>
 </footer>
 
-<div id="overlay"><div class="detail" id="detailBox"></div></div>
 <div id="success">
   <div class="success-card">
     <div class="s-dot"></div>
@@ -557,13 +576,11 @@ function renderHero() {
   var box = state.box, user = state.user || {};
   $("mBox").textContent = URL_CODE;
   $("hName").textContent = user.user_name || "匿名箱主";
-  $("wmText").textContent = (user.user_name || "ASK BOX").toUpperCase();
   $("hDesc").textContent = box.box_description || "欢迎提问～";
   $("avatar").src = user.avatar || "";
   $("avatar").alt = user.user_name || "avatar";
   $("sQ").textContent = box.question_num != null ? box.question_num : "-";
   $("sA").textContent = box.reply_question_num != null ? box.reply_question_num : "-";
-  $("askTip").innerHTML = "想对 <b>" + esc(user.user_name || "TA") + "</b> 说点什么？";
   document.title = "提问箱 · " + (user.user_name || URL_CODE);
   updateFeedNote();
 }
@@ -583,7 +600,7 @@ function qCardHTML(q) {
     '<div class="qmeta">' + pin +
     '<span class="time">' + fmtTime(atime) + '</span></div>' +
     '<div class="qtext">' + esc(qtext) + '</div>' +
-    (atext ? '<div class="atext">' + esc(atext) + '</div>' : "") +
+    (atext ? '<div class="atext">' + esc(atext) + '</div>' : '<div class="atext">（暂无公开回复）</div>') +
     '<div class="qfoot"><span class="more">展开 <span class="a">→</span></span></div>' +
     '</article>';
 }
@@ -718,27 +735,11 @@ async function submitAsk() {
   }
 }
 
-/* ---------- detail ---------- */
-function openDetail(id) {
-  var q = state.list.find(function (x) { return x._id === id; });
-  if (!q) return;
-  var chat = q.chat_list || [];
-  var meta = '<div class="d-meta"><span>' + fmtTime(q.create_time) + '</span>' +
-    (q.is_pin_to_top ? '<span class="pin">置顶</span>' : "") + '</div>';
-  var qHtml = '<div class="d-q">' + esc(chat[0] ? chat[0].content : q.question) + '</div>';
-  var aHtml = "";
-  chat.slice(1).forEach(function (m) {
-    aHtml += '<div class="d-a">' + esc(m.content) + '</div>';
-  });
-  if (!aHtml) aHtml = '<div class="d-a">（暂无公开回复）</div>';
-  $("detailBox").innerHTML = '<button class="d-close" id="dClose">✕</button>' + meta + qHtml + aHtml;
-  $("overlay").classList.add("open");
-  $("dClose").onclick = closeDetail;
-  document.body.style.overflow = "hidden";
-}
-function closeDetail() {
-  $("overlay").classList.remove("open");
-  document.body.style.overflow = "";
+/* ---------- card expand ---------- */
+function toggleCard(card) {
+  var isOpen = card.classList.toggle("open");
+  var more = card.querySelector(".more");
+  if (more) more.innerHTML = isOpen ? '收起 <span class="a">↑</span>' : '展开 <span class="a">→</span>';
 }
 function closeSuccess() {
   $("success").classList.remove("open");
@@ -747,7 +748,7 @@ function closeSuccess() {
 
 /* ---------- marquee ---------- */
 function buildMarquee() {
-  var parts = ["匿名提问", "欢迎来问", "随便聊聊", "提问箱"];
+  var parts = ["芙蕾", "FREY"];
   var html = "";
   for (var r = 0; r < 2; r++) {
     for (var i = 0; i < parts.length; i++) {
@@ -812,14 +813,14 @@ function boot() {
   $("btnAsk").onclick = submitAsk;
   $("askInput").addEventListener("input", function () { $("askCount").textContent = this.value.length; });
   $("footTop").onclick = function (e) { e.preventDefault(); scrollTo({ top: 0, behavior: "smooth" }); };
-  $("overlay").addEventListener("click", function (e) { if (e.target === $("overlay")) closeDetail(); });
+  $("footHome").onclick = function (e) { if (this.getAttribute("href") === "#") e.preventDefault(); };
   $("sClose").onclick = closeSuccess;
   $("success").addEventListener("click", function (e) { if (e.target === $("success")) closeSuccess(); });
   $("feed").addEventListener("click", function (e) {
     var card = e.target.closest(".qcard");
-    if (card) openDetail(card.getAttribute("data-id"));
+    if (card) toggleCard(card);
   });
-  addEventListener("keydown", function (e) { if (e.key === "Escape") { closeDetail(); closeSuccess(); } });
+  addEventListener("keydown", function (e) { if (e.key === "Escape") closeSuccess(); });
   initCursor();
   initAutoRefresh();
   observeReveals();
@@ -834,6 +835,9 @@ document.addEventListener("DOMContentLoaded", boot);
 </script>
 </body>
 </html>
+
+
+
 
 
 
