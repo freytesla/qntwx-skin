@@ -96,7 +96,7 @@ header.topbar{position:sticky;top:0;z-index:800;background:rgba(245,246,241,.86)
 .marquee{background:var(--ink);color:var(--paper);overflow:hidden;padding:18px 0;border-top:1px solid var(--paper-16);border-bottom:1px solid var(--paper-16)}
 .marquee-track{display:flex;width:max-content;animation:marquee 26s linear infinite}
 .marquee:hover .marquee-track{animation-play-state:paused}
-.marquee span{font-family:var(--font-m);font-size:12px;letter-spacing:.3em;white-space:nowrap;color:var(--paper-58);padding:0 18px}
+.marquee span{font-family:var(--font-d);font-size:clamp(15px,1.6vw,20px);letter-spacing:.14em;white-space:nowrap;color:var(--paper);padding:0}
 .marquee span i{color:var(--green-400);font-style:normal;padding:0 18px;font-family:'Space Mono','Noto Sans SC','Segoe UI Symbol','Apple Symbols',sans-serif}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 section{padding:clamp(56px,8vw,110px) 0}
@@ -131,7 +131,7 @@ section{padding:clamp(56px,8vw,110px) 0}
 .qcard .aimgs{display:none}
 .qcard.open .aimgs{display:grid}
 .aimgs{gap:10px;margin-top:12px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
-.aimgs-label{grid-column:1/-1;font-family:var(--font-m);font-size:10px;letter-spacing:.22em;color:var(--green-200)}
+
 .aimgs img{width:100%;max-height:340px;object-fit:cover;border-radius:12px;border:1px solid var(--paper-16);background:rgba(245,246,241,.04)}
 .atext .a-label{font-family:var(--font-m);font-size:10px;letter-spacing:.26em;color:var(--green-400);display:block;margin-bottom:8px}
 .qfoot{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:16px;border-top:1px solid var(--paper-16)}
@@ -213,6 +213,7 @@ html.lenis,html.lenis body{height:auto}
 .lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
 .lenis.lenis-stopped{overflow:hidden}
 </style>
+
 
 
 
@@ -700,15 +701,13 @@ function updateFeedNote() {
   if (box.range && Number(box.range) > 0 && Number(box.range) <= 180) tip = Number(box.range) + "天内";
   $("feedNote").textContent = "只会显示" + (tip || "") + "已公开回复的提问～";
 }
-function picsHTML(msg, kind) {
+function picsHTML(msg) {
   if (!msg || !msg.file_id || !state.files || !state.files[msg.file_id]) return "";
   var pics = state.files[msg.file_id].pic || [];
   if (!pics.length) return "";
-  var label = kind === "q" ? "问题图片" : "回答图片";
-  return '<div class="aimgs aimgs-' + kind + '"><span class="aimgs-label">' + label + '</span>' +
-    pics.map(function (p) {
-      return '<img src="' + esc(p.url) + '" alt="" loading="lazy" referrerpolicy="no-referrer">';
-    }).join("") + '</div>';
+  return '<div class="aimgs">' + pics.map(function (p) {
+    return '<img src="' + esc(p.url) + '" alt="" loading="lazy" referrerpolicy="no-referrer">';
+  }).join("") + '</div>';
 }
 function qCardHTML(q) {
   var chat = q.chat_list || [];
@@ -718,8 +717,8 @@ function qCardHTML(q) {
   var atext = amsg && amsg.content ? amsg.content : "";
   var atime = amsg && amsg.create_time ? amsg.create_time : q.update_time;
   var pin = q.is_pin_to_top ? '<span class="tag">置顶</span>' : "";
-  var qImgs = picsHTML(qmsg, "q");
-  var aImgs = picsHTML(amsg, "a");
+  var qImgs = picsHTML(qmsg);
+  var aImgs = picsHTML(amsg);
   var body = "";
   if (qImgs) body += qImgs;
   if (atext) body += '<div class="atext">' + esc(atext) + '</div>';
@@ -978,6 +977,7 @@ document.addEventListener("DOMContentLoaded", boot);
 </script>
 </body>
 </html>
+
 
 
 
