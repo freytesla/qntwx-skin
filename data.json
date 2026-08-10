@@ -1,5 +1,5 @@
 {
-  "updated_at": 1786362423184,
+  "updated_at": 1786366788414,
   "url_code": "SLPC5S",
   "box": {
     "_id": "6a04903b99c62450c1959947",
@@ -273,7 +273,7 @@
     },
     {
       "_id": "6a0c54d36e5d2d6dce318d0d",
-      "question": "终于等到回复嘿嘿，蹲一个mbti！\n顺便你可以试试除了16personality以外的网站！比如totypes或者jungus",
+      "question": "终于等到回复嘿��，蹲一个mbti！\n顺便你可以试试除了16personality以外的网站！比如totypes或者jungus",
       "chat_list": [
         {
           "content": "终于等到回复嘿嘿，蹲一个mbti！\n顺便你可以试试除了16personality以外的网站！比如totypes或者jungus",
@@ -474,7 +474,7 @@
     },
     {
       "_id": "6a04acbefe975f6be0c5386f",
-      "question": "好奇老师是怎么入坑音乐剧��",
+      "question": "好奇老师是怎么入坑音乐剧的",
       "chat_list": [
         {
           "content": "好奇老师是怎么入坑音乐剧的",
@@ -655,5 +655,39 @@
       "update_time": 1778684250652
     }
   ],
+  "files": {
+    "6a2ac69a286f7c2db6a920c8": {
+      "_id": "6a2ac69a286f7c2db6a920c8",
+      "source": "anwser_question",
+      "bind_id": "6a2ac079466d4140157735ec",
+      "pic": [
+        {
+          "uri": "file:///var/mobile/Containers/Data/Application/4DA397F3-B90C-4523-B204-CAA49D309EC8/Library/Pandora/apps/__UNI__13E7E69/doc/uniapp_temp_1781182148724/gallery/1781187688-compressed-IMG_8143.JPG",
+          "name": "6a04903a3d029c1a165d1787_1781188055749_undefined",
+          "url": "https://mp-5dcb9f9e-a8e8-4d51-a064-e30f76421e0a.cdn.bspapp.com/cloudstorage/5849a404-e8fa-4f75-ab4b-2f9d122a043e."
+        }
+      ],
+      "audio": [],
+      "create_time": 1781188250500,
+      "check": false,
+      "is_delete": false
+    },
+    "6a2ac95e1c90b64e4ebb312b": {
+      "_id": "6a2ac95e1c90b64e4ebb312b",
+      "source": "anwser_question",
+      "bind_id": "6a2ac44c8a5c78e6975006bb",
+      "pic": [
+        {
+          "uri": "file:///var/mobile/Containers/Data/Application/4DA397F3-B90C-4523-B204-CAA49D309EC8/Library/Pandora/apps/__UNI__13E7E69/doc/uniapp_temp_1781182148724/gallery/1781188670-compressed-IMG_8144.PNG",
+          "name": "6a04903a3d029c1a165d1787_1781188687210_undefined",
+          "url": "https://mp-5dcb9f9e-a8e8-4d51-a064-e30f76421e0a.cdn.bspapp.com/cloudstorage/58e13319-1885-4461-8e29-e72658d828cb."
+        }
+      ],
+      "audio": [],
+      "create_time": 1781188958699,
+      "check": true,
+      "is_delete": false
+    }
+  },
   "total": 26
 }

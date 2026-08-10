@@ -126,6 +126,23 @@ async function main() {
     console.log("questions page", page - 1, "fetched, total", total);
   }
 
+  const fileIds = [];
+  for (const q of questions) {
+    for (const m of (q.chat_list || [])) {
+      if (m.file_id && m.file_id !== "") fileIds.push(m.file_id);
+    }
+  }
+  const uniqFileIds = fileIds.filter((v, i) => fileIds.indexOf(v) === i);
+  const files = {};
+  if (uniqFileIds.length) {
+    const f = await withRetry(() => queryCollection("file", [
+      { $method: "where", $param: [{ _id: { $db: [{ $method: "command" }, { $method: "in", $param: [uniqFileIds] }] } }] },
+      { $method: "get", $param: [] },
+    ], token));
+    for (const doc of f.data) files[doc._id] = doc;
+    console.log("files:", Object.keys(files).length);
+  }
+
   const out = {
     updated_at: Date.now(),
     url_code: URL_CODE,
@@ -133,11 +150,13 @@ async function main() {
     user,
     pinned,
     questions,
+    files,
     total: questions.length,
   };
   fs.writeFileSync("data.json", JSON.stringify(out, null, 2));
-  console.log("synced", questions.length, "questions, pinned", pinned.length, "total", out.total);
+  console.log("synced", questions.length, "questions, pinned", pinned.length, "files", Object.keys(files).length, "total", out.total);
 }
 
 main().catch((e) => { console.error("SYNC FAILED:", e.message); process.exit(1); });
+
 
