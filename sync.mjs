@@ -20,10 +20,12 @@ function post(body, extraHeaders = {}) {
     const data = JSON.stringify(body);
     const req = https.request(ENDPOINT, {
       method: "POST",
+      timeout: 20000,
       headers: Object.assign({
         "Content-Type": "application/json",
         "x-serverless-sign": sign(body),
         "Content-Length": Buffer.byteLength(data),
+        "Connection": "close",
       }, extraHeaders),
     }, (res) => {
       let raw = "";
@@ -39,10 +41,18 @@ function post(body, extraHeaders = {}) {
         resolve(parsed.data);
       });
     });
+    req.on("timeout", () => { req.destroy(new Error("timeout")); });
     req.on("error", reject);
     req.write(data);
     req.end();
   });
+}
+async function withRetry(fn, tries = 3) {
+  let last;
+  for (let i = 0; i < tries; i++) {
+    try { return await fn(); } catch (e) { last = e; console.log("retry", i + 1, "after:", e.message); await new Promise(r => setTimeout(r, 3000)); }
+  }
+  throw last;
 }
 
 async function getToken() {
@@ -77,38 +87,43 @@ function buildWhere(box, now) {
 }
 
 async function main() {
-  const token = await getToken();
+  const token = await withRetry(() => getToken());
+  console.log("token ok");
 
-  const boxData = await queryCollection("ask_box_info", [
+  const boxData = await withRetry(() => queryCollection("ask_box_info", [
     { $method: "where", $param: [{ $db: [{ $method: "command" }, { $method: "or", $param: [[{ default_url_code: URL_CODE }, { custom_url_code: URL_CODE }]] }] }] },
     { $method: "get", $param: [] },
-  ], token);
+  ], token));
   const box = boxData.data[0];
   if (!box) throw new Error("box not found: " + URL_CODE);
+  console.log("box ok:", box.user_id);
 
-  const user = await callFunction("box_web", { user_id: box.user_id, type: "get_user_info" }, token);
+  const user = await withRetry(() => callFunction("box_web", { user_id: box.user_id, type: "get_user_info" }, token));
+  console.log("user ok:", user.user_name);
 
   let pinned = [];
   if (box.pin_to_top && box.pin_to_top.length) {
-    const p = await callFunction("box_web", { type: "get_pin_to_top", other_data: { pin_to_top: box.pin_to_top } }, token);
+    const p = await withRetry(() => callFunction("box_web", { type: "get_pin_to_top", other_data: { pin_to_top: box.pin_to_top } }, token));
     pinned = Array.isArray(p) ? p : (p && p.data ? p.data : []);
   }
+  console.log("pinned ok:", pinned.length);
 
   const now = Date.now();
   const questions = [];
   let page = 1, total = Infinity;
   while (questions.length < total && page <= 40) {
-    const res = await queryCollection("ask_box_question", [
+    const res = await withRetry(() => queryCollection("ask_box_question", [
       { $method: "where", $param: [buildWhere(box, now)] },
       { $method: "field", $param: ["question,create_time,chat_list,update_time"] },
       { $method: "orderBy", $param: ["update_time desc"] },
       { $method: "skip", $param: [(page - 1) * PAGE_SIZE] },
       { $method: "limit", $param: [PAGE_SIZE] },
       { $method: "get", $param: [{ getCount: true }] },
-    ], token);
+    ], token));
     total = res.count != null ? res.count : res.data.length;
     questions.push(...res.data);
     page++;
+    console.log("questions page", page - 1, "fetched, total", total);
   }
 
   const out = {
@@ -125,3 +140,4 @@ async function main() {
 }
 
 main().catch((e) => { console.error("SYNC FAILED:", e.message); process.exit(1); });
+
