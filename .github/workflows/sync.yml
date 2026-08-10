@@ -1,7 +1,7 @@
 ﻿name: sync-questions
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/10 * * * *"
   workflow_dispatch:
   push:
     branches: [main]
@@ -30,3 +30,4 @@ jobs:
           git add data.json
           git diff --cached --quiet || git commit -m "sync: update box data"
           git push origin HEAD:main
+
