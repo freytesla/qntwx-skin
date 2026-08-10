@@ -454,7 +454,7 @@ async function queryCollection(collection, stages) {
 
 /* ---------- app state ---------- */
 var URL_CODE = (new URLSearchParams(location.search)).get("url_code") || "SLPC5S";
-var state = { box: null, user: null, page: 0, size: 6, hasMore: true, list: [], total: 0, loading: false, auto: true, updatedAt: 0 };
+var state = { box: null, user: null, page: 0, size: 6, hasMore: true, list: [], listFull: [], rowsLen: 0, total: 0, loading: false, auto: true, updatedAt: 0, usingSnapshot: false, snapshot: null };
 var $ = function (id) { return document.getElementById(id); };
 
 /* ---------- helpers ---------- */
@@ -501,6 +501,7 @@ function updateProgress() {
   var pct = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight);
   $("progress").style.width = (pct * 100) + "%";
 }
+
 
 
 /* ---------- data loading ---------- */
@@ -589,11 +590,13 @@ function qCardHTML(q) {
 function renderFeed(append) {
   var feed = $("feed");
   if (!append) feed.innerHTML = "";
-  state.list.forEach(function (q) {
+  var start = append ? state.rowsLen : 0;
+  for (var i = start; i < state.list.length; i++) {
     var div = document.createElement("div");
-    div.innerHTML = qCardHTML(q);
+    div.innerHTML = qCardHTML(state.list[i]);
     feed.appendChild(div.firstElementChild);
-  });
+  }
+  state.rowsLen = state.list.length;
   $("moreWrap").style.display = state.hasMore ? "" : "none";
   if (!state.list.length) feed.innerHTML = '<div class="feed-empty">暂无公开问答</div>';
   observeReveals();
@@ -603,24 +606,60 @@ function renderFooterTime() {
 }
 
 /* ---------- load orchestration ---------- */
+async function loadLive(resetPage) {
+  if (!state.box) await loadBox();
+  if (!state.user) await loadUser();
+  if (resetPage) { state.page = 0; state.list = []; }
+  state.page++;
+  var pageRes = await loadQuestionsPage(state.page);
+  var pinned = state.page === 1 ? await loadPinned() : [];
+  var pinIds = {};
+  pinned.forEach(function (p) { pinIds[p._id] = true; });
+  state.list = state.list.filter(function (q) { return !pinIds[q._id]; });
+  state.list = state.list.concat(pinned, pageRes.rows.filter(function (q) { return !pinIds[q._id]; }));
+  state.total = pageRes.count;
+  state.hasMore = state.list.length < state.total;
+  state.updatedAt = Date.now();
+}
+async function loadSnapshotData() {
+  var res = await fetch("data.json", { cache: "no-store" });
+  if (!res.ok) throw new Error("数据加载失败");
+  state.snapshot = await res.json();
+  var data = state.snapshot;
+  state.box = data.box;
+  state.user = data.user;
+  var pins = (data.pinned || []).map(function (p) { p.is_pin_to_top = true; return p; });
+  var pinIds = {};
+  pins.forEach(function (p) { pinIds[p._id] = true; });
+  state.listFull = pins.concat((data.questions || []).filter(function (q) { return !pinIds[q._id]; }));
+  state.total = data.total != null ? data.total : state.listFull.length;
+  state.updatedAt = data.updated_at || Date.now();
+}
+async function loadSnapshotPage(resetPage) {
+  if (resetPage) { state.page = 0; state.list = []; }
+  await loadSnapshotData();
+  state.page++;
+  state.list = state.listFull.slice(0, state.page * state.size);
+  state.hasMore = state.list.length < state.listFull.length;
+}
 async function loadAll(resetPage) {
   if (state.loading) return;
   state.loading = true;
   $("btnRefresh").classList.add("active");
   try {
-    if (!state.box) await loadBox();
-    if (!state.user) await loadUser();
-    if (resetPage) { state.page = 0; state.list = []; }
-    state.page++;
-    var pageRes = await loadQuestionsPage(state.page);
-    var pinned = state.page === 1 ? await loadPinned() : [];
-    var pinIds = {};
-    pinned.forEach(function (p) { pinIds[p._id] = true; });
-    state.list = state.list.filter(function (q) { return !pinIds[q._id]; });
-    state.list = state.list.concat(pinned, pageRes.rows.filter(function (q) { return !pinIds[q._id]; }));
-    state.total = pageRes.count;
-    state.hasMore = state.list.length < state.total;
-    state.updatedAt = Date.now();
+    if (resetPage) { state.page = 0; state.list = []; state.rowsLen = 0; }
+    if (state.usingSnapshot) {
+      await loadSnapshotPage(resetPage);
+    } else {
+      try {
+        await loadLive(resetPage);
+        state.usingSnapshot = false;
+      } catch (err) {
+        console.warn("live api unavailable, using data.json", err);
+        await loadSnapshotPage(true);
+        state.usingSnapshot = true;
+      }
+    }
     renderHero();
     renderFeed(!resetPage && state.page > 1);
     renderFooterTime();
@@ -642,6 +681,11 @@ async function submitAsk() {
   var input = $("askInput");
   var question = input.value.trim();
   if (question.length < 2) { toast("提问内容太少了哦～", true); return; }
+  if (state.usingSnapshot) {
+    window.open("https://qntwx.cn/" + URL_CODE + "#/pages/1/ask?url_code=" + URL_CODE, "_blank");
+    toast("已为你打开提问页");
+    return;
+  }
   var btn = $("btnAsk");
   btn.disabled = true;
   btn.textContent = "发送中…";
@@ -790,4 +834,7 @@ document.addEventListener("DOMContentLoaded", boot);
 </script>
 </body>
 </html>
+
+
+
 
