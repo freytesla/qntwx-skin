@@ -58,6 +58,9 @@ header.topbar{position:sticky;top:0;z-index:800;background:rgba(245,246,241,.86)
 .foot-logo tspan{fill:var(--green-400)}
 .topbar .brand span{font-family:var(--font-m);font-size:10px;color:var(--ink-58);letter-spacing:.22em}
 .topbar nav{display:flex;align-items:center;gap:8px}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:9px}
+.tb-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+.tb-clock{font-family:var(--font-m);font-size:11px;letter-spacing:.2em;color:var(--ink-40)}
 .tb-btn{font-family:var(--font-m);font-size:11px;letter-spacing:.18em;padding:8px 12px;border:1px solid var(--ink-14);border-radius:8px;transition:all .3s ease;color:var(--ink-58)}
 .tb-btn:hover{color:var(--green);border-color:var(--green);transform:translateY(-1px)}
 .tb-btn.active{color:#fff;background:var(--green);border-color:var(--green)}
@@ -222,6 +225,7 @@ html.lenis,html.lenis body{height:auto}
 
 
 
+
 </head>
 <body>
 
@@ -247,8 +251,8 @@ html.lenis,html.lenis body{height:auto}
   </defs>
   <text x="6" y="78" font-family="'Syne','Star',sans-serif" font-weight="800" font-size="100" letter-spacing="-2" fill="#0A0D0C">Frey<tspan fill="#01847F">&#x2726;</tspan></text>
 </svg>
-
     </div>
+    <div class="tb-right"><span class="tb-dot"></span><span class="tb-clock" id="tbClock">--:--:--</span></div>
 
   </div>
 </header>
@@ -349,7 +353,8 @@ html.lenis,html.lenis body{height:auto}
   </defs>
   <text x="6" y="78" font-family="'Syne','Star',sans-serif" font-weight="800" font-size="100" letter-spacing="-2" fill="#0A0D0C">Frey<tspan fill="#01847F">&#x2726;</tspan></text>
 </svg>
-</div>
+    </div>
+    <div class="tb-right"><span class="tb-dot"></span><span class="tb-clock" id="tbClock">--:--:--</span></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <!-- TODO: 把下面这个 href 换成你的个人主页链接 -->
         <a href="#" id="footHome" style="font-family:var(--font-m);font-size:11px;letter-spacing:.2em;color:var(--paper-58);border:1px solid var(--paper-16);padding:10px 16px;border-radius:8px;transition:all .3s">主页 ↗</a>
@@ -379,6 +384,9 @@ html.lenis,html.lenis body{height:auto}
 
 </script>
 <script>
+
+
+
 
 
 
@@ -755,6 +763,11 @@ function renderPager() {
   pager.innerHTML = html;
   $("pagerInfo").textContent = "第 " + page + " / " + totalPages + " 页 · 共 " + total + " 条";
 }
+function tickClock() {
+  var d = new Date(), p = function (n) { return (n < 10 ? "0" : "") + n; };
+  var el = $("tbClock");
+  if (el) el.textContent = p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
+}
 function renderFooterTime() {
   $("footTime").textContent = state.updatedAt ? fmtTime(state.updatedAt) : "--";
 }
@@ -918,6 +931,8 @@ function initAutoRefresh() {
 /* ---------- boot ---------- */
 function boot() {
   buildMarquee();
+  tickClock();
+  setInterval(tickClock, 1000);
   addEventListener("resize", buildMarquee);
   updateProgress();
   addEventListener("scroll", updateProgress, { passive: true });
@@ -962,6 +977,7 @@ document.addEventListener("DOMContentLoaded", boot);
 </script>
 </body>
 </html>
+
 
 
 
