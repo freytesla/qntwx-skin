@@ -66,7 +66,7 @@ header.topbar{position:sticky;top:0;z-index:800;background:rgba(245,246,241,.86)
   .tb-btn span.txt{display:none}
   .tb-btn{padding:8px 10px}
 }
-.hero{position:relative;padding:clamp(56px,9vw,120px) 0 clamp(40px,7vw,90px);overflow:hidden}
+.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:clamp(56px,9vw,120px) 0;overflow:hidden}
 .hero-watermark{position:absolute;top:-.06em;right:-.02em;font-family:var(--font-d);font-weight:800;font-size:clamp(120px,24vw,360px);line-height:1;color:transparent;-webkit-text-stroke:1px rgba(10,13,12,.07);user-select:none;pointer-events:none}
 .hero-meta{display:flex;flex-wrap:wrap;gap:10px 28px;margin-bottom:clamp(28px,5vw,52px)}
 .hero-meta .mono{font-size:11px;color:var(--ink-40)}
@@ -97,6 +97,8 @@ header.topbar{position:sticky;top:0;z-index:800;background:rgba(245,246,241,.86)
 .marquee span i{color:var(--green-400);font-style:normal;padding:0 18px}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 section{padding:clamp(56px,8vw,110px) 0}
+#feedSec{min-height:100vh;min-height:100svh}
+#askSec{min-height:100vh;min-height:100svh;display:flex;align-items:center}
 .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;border-bottom:1px solid var(--ink-14);padding-bottom:22px;margin-bottom:clamp(32px,5vw,56px);flex-wrap:wrap}
 .sec-head .num{font-family:var(--font-m);font-size:12px;letter-spacing:.3em;color:var(--green);display:block;margin-bottom:14px}
 .sec-head h2{font-family:var(--font-d);font-weight:800;font-size:clamp(34px,5.4vw,72px);line-height:.98;letter-spacing:-.02em}
@@ -199,6 +201,7 @@ footer{background:var(--bg);color:var(--paper);border-top:1px solid var(--paper-
   .reveal{opacity:1;transform:none}
 }
 </style>
+
 
 
 
@@ -773,13 +776,13 @@ function closeSuccess() {
 /* ---------- marquee ---------- */
 function buildMarquee() {
   var parts = ["芙蕾", "FREY"];
-  var html = "";
-  for (var r = 0; r < 2; r++) {
-    for (var i = 0; i < parts.length; i++) {
-      html += "<span>" + parts[i] + "<i>●</i></span>";
-    }
-  }
-  $("mqTrack").innerHTML = html;
+  var chunk = parts.map(function (p) { return "<span>" + p + "<i>●</i></span>"; }).join("");
+  var track = $("mqTrack");
+  track.innerHTML = chunk;
+  var repeats = Math.max(4, Math.ceil(innerWidth / Math.max(1, track.scrollWidth)) + 2);
+  var half = "";
+  for (var i = 0; i < repeats; i++) half += chunk;
+  track.innerHTML = half + half;
 }
 
 /* ---------- reveal / cursor / misc ---------- */
@@ -828,6 +831,7 @@ function initAutoRefresh() {
 /* ---------- boot ---------- */
 function boot() {
   buildMarquee();
+  addEventListener("resize", buildMarquee);
   updateProgress();
   addEventListener("scroll", updateProgress, { passive: true });
   $("btnRefresh").onclick = function () { loadPage(1); };
@@ -865,6 +869,7 @@ document.addEventListener("DOMContentLoaded", boot);
 </script>
 </body>
 </html>
+
 
 
 
