@@ -1,5 +1,5 @@
 {
-  "updated_at": 1789817181785,
+  "updated_at": 1789828457269,
   "url_code": "SLPC5S",
   "box": {
     "_id": "6a04903b99c62450c1959947",
@@ -95,39 +95,6 @@
       ],
       "create_time": 1781189666904,
       "update_time": 1781192800193
-    },
-    {
-      "_id": "6a2ac079466d4140157735ec",
-      "question": "学了吉他🎸！太棒啦！",
-      "chat_list": [
-        {
-          "content": "学了吉他🎸！太棒啦！",
-          "is_self": false,
-          "create_time": 1781186678542,
-          "file_id": "",
-          "file_where": "_id=='none'"
-        },
-        {
-          "content": "其实是重操旧业宝宝！高中住宿三年没摸过感觉忘光了🥲，附赠一张好久之前的照片呀😋",
-          "create_time": 1781188250490,
-          "user_id": "6a04903a3d029c1a165d1787",
-          "file_id": "6a2ac69a286f7c2db6a920c8",
-          "location": {
-            "type": "wgs84",
-            "altitude": 25.79186974186293,
-            "latitude": 23.21126028821778,
-            "longitude": 112.8472130315201,
-            "speed": null,
-            "accuracy": 19.18892515355225,
-            "errMsg": "getLocation:ok"
-          },
-          "is_self": true,
-          "file_where": "_id=='6a2ac69a286f7c2db6a920c8'",
-          "have_re_edit": true
-        }
-      ],
-      "create_time": 1781186678542,
-      "update_time": 1781189268199
     },
     {
       "_id": "6a2ac44c8a5c78e6975006bb",
@@ -656,22 +623,6 @@
     }
   ],
   "files": {
-    "6a2ac69a286f7c2db6a920c8": {
-      "_id": "6a2ac69a286f7c2db6a920c8",
-      "source": "anwser_question",
-      "bind_id": "6a2ac079466d4140157735ec",
-      "pic": [
-        {
-          "uri": "file:///var/mobile/Containers/Data/Application/4DA397F3-B90C-4523-B204-CAA49D309EC8/Library/Pandora/apps/__UNI__13E7E69/doc/uniapp_temp_1781182148724/gallery/1781187688-compressed-IMG_8143.JPG",
-          "name": "6a04903a3d029c1a165d1787_1781188055749_undefined",
-          "url": "https://mp-5dcb9f9e-a8e8-4d51-a064-e30f76421e0a.cdn.bspapp.com/cloudstorage/5849a404-e8fa-4f75-ab4b-2f9d122a043e."
-        }
-      ],
-      "audio": [],
-      "create_time": 1781188250500,
-      "check": false,
-      "is_delete": false
-    },
     "6a2ac95e1c90b64e4ebb312b": {
       "_id": "6a2ac95e1c90b64e4ebb312b",
       "source": "anwser_question",
@@ -689,5 +640,5 @@
       "is_delete": false
     }
   },
-  "total": 26
+  "total": 25
 }
