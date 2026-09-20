@@ -1,5 +1,5 @@
 {
-  "updated_at": 1789885755051,
+  "updated_at": 1789904540733,
   "url_code": "SLPC5S",
   "box": {
     "_id": "6a04903b99c62450c1959947",
@@ -11,8 +11,8 @@
     "question_show": [],
     "ban_questioner_id": [],
     "box_description": "欢迎👏，随意提问哦\n很懒得打字所以可能会不想回一些要写很长的问题，不代表不喜欢哦我就是纯懒！！",
-    "question_num": 27,
-    "reply_question_num": 26,
+    "question_num": 28,
+    "reply_question_num": 27,
     "channel_list": [
       {
         "name": "微博",
@@ -53,6 +53,28 @@
   "pinned": [],
   "questions": [
     {
+      "_id": "6aafba4d7ae708ac236580e7",
+      "question": "大学幸福 还是高中幸福呀",
+      "chat_list": [
+        {
+          "content": "大学幸福 还是高中幸福呀",
+          "is_self": false,
+          "create_time": 1789901388200,
+          "file_id": "",
+          "file_where": "_id=='none'"
+        },
+        {
+          "content": "感觉两种幸福不一样！大学是可以做很多自己喜欢的东西，高中是身边有很多朋友每天会发生不同的有趣的事情！",
+          "create_time": 1789901471041,
+          "user_id": "6a04903a3d029c1a165d1787",
+          "file_id": "",
+          "location": {}
+        }
+      ],
+      "create_time": 1789901388200,
+      "update_time": 1789901471041
+    },
+    {
       "_id": "6a2ad902a674f42b79a840aa",
       "question": "不知道老师看不看zgyyj，因为看到老师朋友圈置顶都是非中所以问一下",
       "chat_list": [
@@ -64,7 +86,7 @@
           "file_where": "_id=='none'"
         },
         {
-          "content": "说实话基本没看过啊啊😶都是看非中比较多，有尝试看过一些中国音乐剧片段，但是实在不太合我胃口捏，然后我习惯偏向有官摄+大剧场的剧，毕竟票价摆在这不喜欢开盲盒（）但是一些口碑很好的zgyyj也会想去看，比如说大状王！（接大状王回广东…）",
+          "content": "说实话基本没看过啊啊😶都是看非中比较多，有尝试看过一些中国音乐剧片段，但是实在不太合���胃口捏，然后我习惯偏向有官摄+大剧场的剧，毕竟票价摆在这不喜欢开盲盒（）但是一些口碑很好的zgyyj也会想去看，比如说大状王！（接大状王回广东…）",
           "create_time": 1781193408529,
           "user_id": "6a04903a3d029c1a165d1787",
           "file_id": "",
@@ -640,5 +662,5 @@
       "is_delete": false
     }
   },
-  "total": 25
+  "total": 26
 }
