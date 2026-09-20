@@ -1,5 +1,5 @@
 {
-  "updated_at": 1789933566305,
+  "updated_at": 1789941115916,
   "url_code": "SLPC5S",
   "box": {
     "_id": "6a04903b99c62450c1959947",
@@ -220,7 +220,7 @@
       "question": "我觉得你穿牛皮好好看呀！！",
       "chat_list": [
         {
-          "content": "我觉得你穿牛皮好好看呀！！",
+          "content": "我觉得你穿牛皮好好��呀！！",
           "is_self": false,
           "create_time": 1781183389055,
           "file_id": "",
